@@ -1,0 +1,16 @@
+question_number,question,difficulty
+1,What was the total revenue for Salesforce in the quarter ended December 31 2024?,Easy
+2,How do I categorize a $15.50 transaction at Starbucks in my monthly budget?,Easy
+3,Explain the difference between a Roth IRA and a Traditional IRA like I am a beginner.,Easy
+4,What are the standard tax deductions for a middle-class family with two children in 2025?,Easy
+5,What is the current stock price and dividend yield for Microsoft (MSFT)?,Easy
+6,Analyze my last 3 months of spending and suggest 3 specific areas where I can reduce costs by 10%.,Medium
+7,Calculate the year-over-year (YoY) percent change in Amazon's AWS revenue between 2023 and 2024.,Medium
+8,Compare the 5-year total cost of owning a $500k home in Fremont vs. renting a similar property at $4000/month.,Medium
+9,Summarize the most recent capital raise for Viking Therapeutics (VKTX) including the share price and total funding.,Medium
+10,How does an inventory write-down of $1M impact the three primary financial statements?,Medium
+11,I am a dual citizen of the UK and US living in CA. If I sell a London property I rented for 18 months to fund a 1031 exchange in Texas, what is my immediate tax liability?,Hard
+12,Calculate Amazon's FY2024 'M&A Firepower' using cash on hand plus 2x GAAP EBITDA leverage, rounded to the nearest billion.,Hard
+13,Based on the last four 10-Q filings, which geographic region has experienced the highest sequential revenue growth for Airbnb?,Hard
+14,Identify the specific GAAP to Non-GAAP adjustments made in Lemonade Insurance's Adjusted EBITDA for the full year 2024.,Hard
+15,Compare the P99 latency and execution logic of using a 'Manager' agent vs. a 'Task-Specific' tool for a 3-way invoice match across 500 records.,Hard

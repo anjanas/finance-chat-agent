@@ -17,6 +17,13 @@ class Settings:
     NEBIUS_API_KEY: str = os.getenv("NEBIUS_API_KEY")
     MODEL_PROVIDER: str = os.getenv("MODEL_PROVIDER", "nebius")
     MODEL_NAME: str = os.getenv("MODEL_NAME", "moonshotai/Kimi-K2-Instruct")
+    
+    # Intent classification model (for guardrails and intent classification)
+    INTENT_CLASSIFIER_MODEL: str = os.getenv("INTENT_CLASSIFIER_MODEL", "openai/gpt-4o-mini")
+    
+    # Judge model for answer verification (optional, uses different model to verify answers)
+    JUDGE_MODEL_ENABLED: bool = os.getenv("JUDGE_MODEL_ENABLED", "false").lower() in ('true', '1', 't')
+    JUDGE_MODEL_NAME: str = os.getenv("JUDGE_MODEL_NAME", "openai/gpt-4o-mini")
 
     # Tools
     MCP_ENABLED: bool = os.getenv("MCP_ENABLED", "false").lower() in ('true', '1', 't')
@@ -24,10 +31,19 @@ class Settings:
 
     # Finish condition
     MAX_ITERATIONS = 20
+    
+    # Prompt mode: "detailed", "json", or "auto" (auto uses intent classifier)
+    PROMPT_MODE: str = os.getenv("PROMPT_MODE", "json").lower()
+    
+    # Model training date cutoff (YYYY-MM-DD format)
+    # Questions about dates beyond this will be rejected
+    MODEL_TRAINING_CUTOFF: str = os.getenv("MODEL_TRAINING_CUTOFF", "2024-04-01")
 
 
 # Create settings
 settings = Settings()
+
+print(f"PROMPT_MODE: {settings.PROMPT_MODE}")
 
 if not settings.NEBIUS_API_KEY or not settings.NEBIUS_API_KEY.strip():
     print(

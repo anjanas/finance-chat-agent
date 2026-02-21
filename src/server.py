@@ -49,6 +49,13 @@ def main():
     app.routes.append(Route("/card", endpoint=agent_card_endpoint, methods=["GET"]))
 
     logger.info(f"Starting Finance Purple Agent on {args.host}:{args.port}")
+    logger.info(f"PROMPT_MODE: {settings.PROMPT_MODE}")
+    logger.info(f"MODEL_NAME (for answering): {settings.MODEL_NAME}")
+    logger.info(f"INTENT_CLASSIFIER_MODEL: {settings.INTENT_CLASSIFIER_MODEL}")
+    logger.info(f"MODEL_TRAINING_CUTOFF: {settings.MODEL_TRAINING_CUTOFF}")
+    logger.info(f"JUDGE_MODEL_ENABLED: {settings.JUDGE_MODEL_ENABLED}")
+    if settings.JUDGE_MODEL_ENABLED:
+        logger.info(f"JUDGE_MODEL_NAME: {settings.JUDGE_MODEL_NAME}")
     logger.info(f"Agent card available at: http://{args.host}:{args.port}/card")
 
     uvicorn.run(app, host=args.host, port=args.port)

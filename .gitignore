@@ -73,6 +73,12 @@ coverage.xml
 dist/
 build/
 
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+experiment_tracker.db
+
 # Logs
 logs/
 *.log
