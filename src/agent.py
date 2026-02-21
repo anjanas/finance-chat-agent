@@ -170,6 +170,10 @@ class PurpleAgent:
         # Get available tools (each time)
         tool_list = await self._tools.get_tools() if self._tools else None
 
+        # Track judge retry attempts
+        judge_retry_count = 0
+        MAX_JUDGE_RETRIES = 2  # Maximum number of retries after judge rejection
+
         # Loop until final answer is obtained (just for errors)
         for iteration in range(settings.MAX_ITERATIONS):
             try:
@@ -343,24 +347,45 @@ class PurpleAgent:
                         judge_reason = judge_result.get("reason")
                         
                         if not judge_result["valid"]:
-                            logger.warning(f"Judge rejected answer: {judge_reason or 'Unknown reason'}")
-                            # Return error message indicating judge rejection
-                            error_message = f"I was unable to provide a reliable answer. {judge_reason or 'The answer did not meet quality standards.'}"
+                            logger.warning(f"Judge rejected answer (retry {judge_retry_count}/{MAX_JUDGE_RETRIES}): {judge_reason or 'Unknown reason'}")
                             
-                            # Update query in database
-                            if query_id:
-                                tracker.update_query(
-                                    query_id=query_id,
-                                    status="judge_rejected",
-                                    response=error_message,
-                                    response_time_ms=response_time_ms,
-                                    iterations=iteration + 1,
-                                    judge_approved=False,
-                                    judge_reason=judge_reason
-                                )
-                            
-                            return "Judge rejected", {"status": "failed", "response": error_message}
-                        logger.info(f"Judge approved answer")
+                            # If we haven't exceeded max retries, send feedback back to model for retry
+                            if judge_retry_count < MAX_JUDGE_RETRIES:
+                                judge_retry_count += 1
+                                
+                                # Add judge feedback to conversation for retry
+                                feedback_message = f"The previous answer was rejected. Feedback: {judge_reason or 'The answer did not meet quality standards. Please provide a corrected answer.'}"
+                                
+                                logger.info(f"Sending judge feedback back to model for retry {judge_retry_count}")
+                                
+                                # Add the feedback as a user message to continue the conversation
+                                self.conversation_history.append({
+                                    "role": "user",
+                                    "content": feedback_message
+                                })
+                                
+                                # Continue the loop to let the model retry
+                                continue
+                            else:
+                                # Max retries exceeded, return error
+                                logger.error(f"Judge rejected answer after {MAX_JUDGE_RETRIES} retries")
+                                error_message = f"I was unable to provide a reliable answer after {MAX_JUDGE_RETRIES} attempts. {judge_reason or 'The answer did not meet quality standards.'}"
+                                
+                                # Update query in database
+                                if query_id:
+                                    tracker.update_query(
+                                        query_id=query_id,
+                                        status="judge_rejected",
+                                        response=error_message,
+                                        response_time_ms=response_time_ms,
+                                        iterations=iteration + 1,
+                                        judge_approved=False,
+                                        judge_reason=judge_reason
+                                    )
+                                
+                                return "Judge rejected", {"status": "failed", "response": error_message}
+                        else:
+                            logger.info(f"Judge approved answer")
                     
                     formatted_response = self._format_response(assistant_message.content, current_prompt_mode)
                     
